@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>haemingway_official</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #000; }
+  a { color: #fff; text-decoration: none; }
+  a:hover { color: #ccc; }
+
+  .hero { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+  .hero video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  .hero-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 28px; background: rgba(0,0,0,0.18); pointer-events: none;
+  }
+  .wordmark {
+    font-family: 'Cormorant Garamond', serif; font-weight: 500;
+    font-size: clamp(28px, 5vw, 56px);
+    letter-spacing: 0.32em; text-indent: 0.32em;
+    color: rgba(255,255,255,0.96);
+    text-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    text-transform: lowercase;
+  }
+  .divider { width: 56px; height: 1px; background: rgba(255,255,255,0.4); }
+  .story-nav { display: flex; gap: clamp(16px, 3vw, 36px); pointer-events: auto; flex-wrap: wrap; justify-content: center; }
+  .story-nav button {
+    background: none; border: 1px solid rgba(255,255,255,0.35);
+    color: rgba(255,255,255,0.9);
+    font-family: 'Cormorant Garamond', serif; font-size: 15px;
+    letter-spacing: 0.22em; text-indent: 0.22em;
+    padding: 10px 22px; cursor: pointer; text-transform: uppercase;
+    transition: all 0.35s ease;
+  }
+  .story-nav button:hover {
+    border-color: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+
+  .scroll-hint {
+    position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
+  }
+  .scroll-hint span {
+    display: block; width: 1px; height: 48px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.85));
+    animation: scrollHint 2.4s ease-in-out infinite;
+  }
+  @keyframes scrollHint {
+    0% { transform: translateY(0); opacity: 0.9; }
+    60% { transform: translateY(10px); opacity: 0.3; }
+    100% { transform: translateY(0); opacity: 0.9; }
+  }
+
+  .credit {
+    position: absolute; bottom: 16px; right: 20px;
+    font-family: 'Cormorant Garamond', serif; font-size: 11px;
+    letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.45);
+    text-shadow: 0 1px 8px rgba(0,0,0,0.5);
+  }
+
+  .gallery {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 16vh; padding: 18vh 0 22vh 0;
+  }
+  .gallery-item {
+    width: min(900px, 90vw);
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 1.1s ease, transform 1.1s ease;
+  }
+  .gallery-item.visible { opacity: 1; transform: translateY(0); }
+  .gallery-item img { display: block; width: 100%; height: auto; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <video src="assets/hero.mp4" autoplay muted loop playsinline></video>
+  <div class="hero-overlay">
+    <div class="wordmark">haemingway_official</div>
+    <div class="divider"></div>
+    <div class="story-nav" id="storyNav"></div>
+  </div>
+  <div class="scroll-hint"><span></span></div>
+  <div class="credit">created by LMW</div>
+</div>
+
+<div class="gallery" id="gallery"></div>
+
+<script>
+  const images = [
+    { id: 'img-sample', src: 'assets/01-sample-chapter.png' },
+    { id: 'img-note',   src: 'assets/02-creators-note.png' },
+    { id: 'story-1',    src: 'assets/03-story-1.png' },
+    { id: 'story-2',    src: 'assets/04-story-2.png' },
+    { id: 'story-3',    src: 'assets/05-story-3.png' },
+    { id: 'story-4',    src: 'assets/06-story-4.png' }
+  ];
+
+  const gallery = document.getElementById('gallery');
+  images.forEach(({ id, src }) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'gallery-item';
+    wrap.id = id;
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = '';
+    img.loading = 'lazy';
+    wrap.appendChild(img);
+    gallery.appendChild(wrap);
+  });
+
+  const nav = document.getElementById('storyNav');
+  [1, 2, 3, 4].forEach((n) => {
+    const btn = document.createElement('button');
+    btn.textContent = 'story ' + n;
+    btn.addEventListener('click', () => {
+      const el = document.getElementById('story-' + n);
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - window.innerHeight * 0.06;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
+    nav.appendChild(btn);
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.gallery-item').forEach((el) => observer.observe(el));
+</script>
+
+</body>
+</html>
