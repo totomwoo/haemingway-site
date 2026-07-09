@@ -36,14 +36,26 @@
     text-transform: lowercase;
   }
   .divider { width: 56px; height: 1px; background: rgba(255,255,255,0.4); }
-  .story-nav { display: flex; gap: clamp(14px, 2.6vw, 32px); pointer-events: auto; flex-wrap: wrap; justify-content: center; padding: 0 16px; }
+  .story-nav {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: clamp(10px, 2vw, 28px);
+    width: min(700px, 90vw);
+    pointer-events: auto;
+  }
   .story-nav button {
+    width: 100%;
     background: none; border: 1px solid rgba(255,255,255,0.35);
     color: rgba(255,255,255,0.9);
     font-family: 'Cormorant Garamond', serif; font-size: 15px;
     letter-spacing: 0.22em; text-indent: 0.22em;
-    padding: 10px 22px; cursor: pointer; text-transform: uppercase;
+    padding: 10px 0; cursor: pointer; text-transform: uppercase;
+    white-space: nowrap;
     transition: all 0.35s ease;
+  }
+  @media (max-width: 560px) {
+    .wordmark { font-size: 19px; letter-spacing: 0.2em; text-indent: 0.2em; }
+    .story-nav { grid-template-columns: repeat(2, 1fr); gap: 12px; width: min(340px, 86vw); }
+    .story-nav button { font-size: 13px; letter-spacing: 0.18em; text-indent: 0.18em; padding: 11px 0; }
   }
   .story-nav button:hover {
     border-color: rgba(255,255,255,0.9);
@@ -116,7 +128,17 @@
     .side-nav { left: 8px; }
     .side-nav button { font-size: 11px; letter-spacing: 0.16em; padding-left: 10px; }
   }
-  @media (max-width: 700px) { .side-nav { display: none; } }
+  @media (max-width: 700px) {
+    .side-nav {
+      left: 0; gap: 12px;
+      padding: 12px 10px 12px 6px;
+      background: rgba(0,0,0,0.5);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      border-radius: 0 12px 12px 0;
+    }
+    .side-nav button { font-size: 10px; letter-spacing: 0.12em; padding: 3px 0 3px 8px; }
+  }
 
   /* ---------- 공통 섹션 ---------- */
   .section {
