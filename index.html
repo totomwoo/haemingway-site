@@ -45,6 +45,18 @@
     color: #fff;
   }
 
+  .insta-link {
+    display: inline-flex; align-items: center; gap: 10px;
+    pointer-events: auto;
+    font-family: 'Cormorant Garamond', serif; font-size: 14px;
+    letter-spacing: 0.14em;
+    color: rgba(255,255,255,0.75);
+    text-shadow: 0 1px 12px rgba(0,0,0,0.5);
+    transition: color 0.35s ease;
+  }
+  .insta-link:hover { color: #fff; }
+  .insta-link svg { width: 18px; height: 18px; display: block; }
+
   .scroll-hint {
     position: absolute; bottom: 36px; left: 50%; transform: translateX(-50%);
   }
@@ -88,6 +100,14 @@
     <div class="wordmark">haemingway_official</div>
     <div class="divider"></div>
     <div class="story-nav" id="storyNav"></div>
+    <a class="insta-link" href="https://www.instagram.com/haemingway_official?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2.5" y="2.5" width="19" height="19" rx="5.2"></rect>
+        <circle cx="12" cy="12" r="4.4"></circle>
+        <circle cx="17.3" cy="6.7" r="0.8" fill="currentColor" stroke="none"></circle>
+      </svg>
+      <span>정해민 팬클럽 공식계정</span>
+    </a>
   </div>
   <div class="scroll-hint"><span></span></div>
   <div class="credit">created by LMW</div>
