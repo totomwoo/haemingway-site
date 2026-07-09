@@ -132,9 +132,7 @@
     .side-nav {
       left: 0; gap: 12px;
       padding: 12px 10px 12px 6px;
-      background: rgba(0,0,0,0.5);
-      -webkit-backdrop-filter: blur(6px);
-      backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.6);
       border-radius: 0 12px 12px 0;
     }
     .side-nav button { font-size: 10px; letter-spacing: 0.12em; padding: 3px 0 3px 8px; }
@@ -172,7 +170,12 @@
     display: flex; flex-direction: column; align-items: center;
     gap: clamp(40px, 8vh, 90px);
   }
-  .haestory-stack img { display: block; width: 100%; height: auto; }
+  .haestory-stack img {
+    display: block; width: 100%; height: auto;
+    /* 이미지 로드 전에도 높이를 확보해 스크롤 중 레이아웃 점프 방지 (원본 1050x1350) */
+    aspect-ratio: 7 / 9;
+    background: rgba(255,255,255,0.02);
+  }
 
   /* ---------- GRADE ---------- */
   .grade-list { display: flex; flex-direction: column; }
@@ -299,11 +302,6 @@
     border: 1px solid rgba(255,255,255,0.16);
     padding: 30px 28px 26px 28px;
     background: rgba(255,255,255,0.025);
-    transition: border-color 0.35s ease, background 0.35s ease;
-  }
-  .review-card:hover {
-    border-color: rgba(255,255,255,0.4);
-    background: rgba(255,255,255,0.05);
   }
   .review-stars {
     font-size: 15px; letter-spacing: 0.28em;
@@ -537,8 +535,23 @@
     });
     sideBtns.forEach((b, i) => b.classList.toggle('active', i === current));
   }
-  window.addEventListener('scroll', updateSideNav, { passive: true });
+  // 스크롤 이벤트를 프레임당 1회로 제한해 버벅임 방지
+  let navTick = false;
+  window.addEventListener('scroll', () => {
+    if (navTick) return;
+    navTick = true;
+    requestAnimationFrame(() => { updateSideNav(); navTick = false; });
+  }, { passive: true });
   updateSideNav();
+
+  // hero 영상이 화면 밖이면 일시정지해 스크롤 중 디코딩 부하 제거
+  const heroVideo = document.querySelector('.hero video');
+  new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) heroVideo.play().catch(() => {});
+      else heroVideo.pause();
+    });
+  }, { threshold: 0.05 }).observe(heroVideo);
 
   // 리뷰 데이터
   const reviews = [
